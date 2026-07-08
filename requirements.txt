@@ -1,6 +1,8 @@
-streamlit>=1.58
-numpy>=2.0
-scipy>=1.18
-plotly>=6.0
-matplotlib>=3.11
-CoolProp>=8.0
+# Finned-Tube Evaporator Digital Twin - Dependencies
+# Tested with Python 3.13 (Streamlit Cloud: select Python 3.12)
+streamlit==1.58.0
+numpy==2.5.1
+scipy==1.18.0
+plotly==6.8.0
+matplotlib==3.11.0
+CoolProp==8.0.0
