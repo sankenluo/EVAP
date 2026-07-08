@@ -1,0 +1,6 @@
+streamlit>=1.58
+numpy>=2.0
+scipy>=1.18
+plotly>=6.0
+matplotlib>=3.11
+CoolProp>=8.0
