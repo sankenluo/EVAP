@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Streamlit Community Cloud 部署指南</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0e1117;
+    color: #e0e0e0;
+    line-height: 1.7;
+    padding: 40px 20px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .header h1 {
+    font-size: 2.2em;
+    background: linear-gradient(135deg, #ff4b4b, #ff6b6b, #ffa500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header .subtitle { color: #888; font-size: 1.1em; }
+  .repo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a1a2e;
+    border: 1px solid #3a3a4a;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-top: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+  }
+  .repo-badge a { color: #58a6ff; text-decoration: none; }
+  .repo-badge a:hover { text-decoration: underline; }
+  .section {
+    background: #161821;
+    border: 1px solid #2a2a3a;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .section h2 {
+    color: #ff6b6b;
+    font-size: 1.4em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #ff4b4b, #ff6b6b);
+    border-radius: 50%;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+  }
+  .info-box {
+    background: #0d1117;
+    border-left: 4px solid #58a6ff;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  .info-box.warning { border-left-color: #ffa500; }
+  .info-box.success { border-left-color: #3fb950; }
+  .info-box strong { color: #58a6ff; }
+  .info-box.warning strong { color: #ffa500; }
+  .info-box.success strong { color: #3fb950; }
+  .config-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  .config-table th {
+    background: #1a1a2e;
+    color: #8b949e;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid #2a2a3a;
+    font-weight: 600;
+  }
+  .config-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e1e2e;
+  }
+  .config-table td:first-child { color: #8b949e; width: 35%; }
+  .config-table td:last-child { color: #e0e0e0; font-family: 'Courier New', monospace; }
+  .config-table .highlight { color: #3fb950; font-weight: 600; }
+  code {
+    background: #1a1a2e;
+    color: #ff7b72;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: 'Courier New', monospace;
+  }
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 8px 0 8px 32px;
+    position: relative;
+  }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #3fb950;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  .checklist li.pending::before { content: "○"; color: #8b949e; }
+  .arrow {
+    display: block;
+    text-align: center;
+    color: #3a3a4a;
+    font-size: 1.5em;
+    margin: 12px 0;
+  }
+  .url-display {
+    background: #0d1117;
+    border: 1px solid #3a3a4a;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 1.05em;
+    color: #58a6ff;
+    word-break: break-all;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #2a2a3a;
+    color: #8b949e;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Streamlit Community Cloud 部署指南</h1>
+    <div class="subtitle">翅片式蒸发器数字孪生 — 在线部署</div>
+    <div class="repo-badge">
+      <span>📦</span>
+      <a href="https://github.com/sankenluo/EVAP" target="_blank">github.com/sankenluo/EVAP</a>
+    </div>
+  </div>
+
+  <!-- 部署前检查 -->
+  <div class="section">
+    <h2><span class="step-num">0</span> 部署前检查清单</h2>
+    <ul class="checklist">
+      <li>代码已推送到 GitHub 公开仓库 <code>sankenluo/EVAP</code></li>
+      <li>入口文件 <code>app.py</code> 在仓库根目录</li>
+      <li><code>requirements.txt</code> 已固定所有依赖版本</li>
+      <li><code>.streamlit/config.toml</code> 已配置</li>
+      <li>应用无 Secrets / 环境变量依赖（无需额外配置）</li>
+      <li>本地冒烟测试通过（HTTP 200，无报错）</li>
+      <li class="pending">CoolProp 8.0.0 有 Linux x86_64 wheel（兼容 Python 3.12+）</li>
+    </ul>
+  </div>
+
+  <!-- 部署配置 -->
+  <div class="section">
+    <h2><span class="step-num">1</span> 部署配置参数</h2>
+    <p style="margin-bottom:16px; color:#8b949e;">在 Streamlit Cloud 创建应用时，填写以下配置：</p>
+    <table class="config-table">
+      <tr>
+        <th>配置项</th>
+        <th>值</th>
+      </tr>
+      <tr>
+        <td>Repository</td>
+        <td><span class="highlight">sankenluo/EVAP</span></td>
+      </tr>
+      <tr>
+        <td>Branch</td>
+        <td><span class="highlight">main</span></td>
+      </tr>
+      <tr>
+        <td>Main file path</td>
+        <td><span class="highlight">app.py</span></td>
+      </tr>
+      <tr>
+        <td>App URL (custom)</td>
+        <td>可留空，或自定义短链接</td>
+      </tr>
+      <tr>
+        <td>Python version</td>
+        <td><span class="highlight">3.12</span>（推荐）或 3.13</td>
+      </tr>
+      <tr>
+        <td>Secrets</td>
+        <td>无需配置（应用不使用 Secrets）</td>
+      </tr>
+      <tr>
+        <td>Advanced settings</td>
+        <td>保持默认即可</td>
+      </tr>
+    </table>
+
+    <div class="info-box">
+      <strong>为什么选 Python 3.12？</strong><br>
+      CoolProp 8.0.0 提供 <code>cp312-abi3</code> 格式的 Linux wheel，兼容 Python 3.12 及以上版本。本地测试在 Python 3.13 上通过，Streamlit Cloud 选 3.12 最为稳妥。
+    </div>
+  </div>
+
+  <!-- 部署步骤 -->
+  <div class="section">
+    <h2><span class="step-num">2</span> 部署操作步骤</h2>
+
+    <p><strong>步骤 1：</strong>访问 Streamlit Cloud</p>
+    <div class="url-display">https://share.streamlit.io</div>
+
+    <span class="arrow">↓</span>
+
+    <p><strong>步骤 2：</strong>使用 GitHub 账号登录</p>
+    <p style="color:#8b949e; font-size:0.95em;">点击 "Sign in with GitHub"，授权 Streamlit 访问你的 GitHub 仓库</p>
+
+    <span class="arrow">↓</span>
+
+    <p><strong>步骤 3：</strong>创建新应用</p>
+    <p style="color:#8b949e; font-size:0.95em;">点击右上角 "New app" → 选择 "From existing repo"</p>
+
+    <span class="arrow">↓</span>
+
+    <p><strong>步骤 4：</strong>填写配置</p>
+    <ul style="margin:12px 0 12px 24px; color:#8b949e;">
+      <li>Repository: 选择 <code>sankenluo/EVAP</code></li>
+      <li>Branch: <code>main</code></li>
+      <li>Main file path: <code>app.py</code></li>
+      <li>Python version: <code>3.12</code></li>
+    </ul>
+
+    <span class="arrow">↓</span>
+
+    <p><strong>步骤 5：</strong>点击 Deploy!</p>
+    <p style="color:#8b949e; font-size:0.95em;">等待 3-5 分钟，Streamlit Cloud 会自动安装依赖并启动应用</p>
+
+    <div class="info-box success">
+      <strong>部署成功后：</strong><br>
+      应用将获得一个公开 URL，格式为：<br>
+      <code>https://[app-name].streamlit.app</code><br>
+      任何人都可以通过此 URL 访问应用，无需登录。
+    </div>
+  </div>
+
+  <!-- 注意事项 -->
+  <div class="section">
+    <h2><span class="step-num">3</span> 注意事项</h2>
+
+    <div class="info-box warning">
+      <strong>资源限制：</strong>Streamlit Community Cloud 免费版限制：<br>
+      • 每个应用 1GB 内存<br>
+      • 应用闲置 7 天后自动休眠（再次访问时自动唤醒，约 30 秒）<br>
+      • 每月有有限的构建时长
+    </div>
+
+    <div class="info-box">
+      <strong>更新应用：</strong>每次向 GitHub 仓库 <code>main</code> 分支推送新提交时，Streamlit Cloud 会自动检测并重新部署。也可在管理面板手动点击 "Reboot" 或 "Delete and redeploy"。
+    </div>
+
+    <div class="info-box">
+      <strong>CoolProp 依赖：</strong>如果 CoolProp 安装失败（极低概率），应用仍可正常运行——refrigerant.py 内置了多项式后备方案，会在 CoolProp 不可用时自动切换。
+    </div>
+
+    <div class="info-box warning">
+      <strong>config.toml 说明：</strong>当前 <code>.streamlit/config.toml</code> 中的 <code>port</code> 和 <code>headless</code> 设置在 Streamlit Cloud 上会被自动覆盖，不影响部署。
+    </div>
+  </div>
+
+  <!-- 仓库文件 -->
+  <div class="section">
+    <h2><span class="step-num">4</span> 仓库文件结构</h2>
+    <table class="config-table">
+      <tr><th>文件</th><th>说明</th></tr>
+      <tr><td>app.py</td><td>Streamlit 应用入口（交互界面）</td></tr>
+      <tr><td>model.py</td><td>三层架构数字孪生模型核心</td></tr>
+      <tr><td>refrigerant.py</td><td>制冷剂物性（CoolProp + 后备）</td></tr>
+      <tr><td>psychrometrics.py</td><td>湿空气热力学计算</td></tr>
+      <tr><td>requirements.txt</td><td>依赖清单（已固定版本）</td></tr>
+      <tr><td>.streamlit/config.toml</td><td>Streamlit 配置</td></tr>
+      <tr><td>README.md</td><td>项目说明文档</td></tr>
+      <tr><td>.gitignore</td><td>Git 忽略规则</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    翅片式蒸发器数字孪生 · ASHRAE 标准实现 · 2026
+  </div>
+
+</div>
+</body>
+</html>

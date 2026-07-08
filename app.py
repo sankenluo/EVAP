@@ -207,8 +207,8 @@ st.sidebar.markdown("### 🌡️ 运行工况")
 
 col_o1, col_o2 = st.sidebar.columns(2)
 with col_o1:
-    T_evap = st.number_input("蒸发温度 (°C)", -20.0, 15.0, 5.0, 0.5)
-    T_air_in = st.number_input("进风干球温度 (°C)", 10.0, 50.0, 27.0, 0.5)
+    T_evap = st.number_input("蒸发温度 (°C)", -60.0, 15.0, 5.0, 0.5)
+    T_air_in = st.number_input("进风干球温度 (°C)", -40.0, 50.0, 27.0, 0.5)
     face_vel = st.number_input("迎面风速 (m/s)", 0.5, 5.0, _preset_defaults['face_vel'], 0.1,
                                key='face_vel')
 
@@ -757,7 +757,7 @@ col_chart, col_info = st.columns([3, 1])
 
 with col_chart:
     # 绘制焓湿图
-    T_range = np.linspace(-5, 45, 200)
+    T_range = np.linspace(-50, 50, 200)
     p = p_atm
 
     fig_psyc = go.Figure()
@@ -849,9 +849,9 @@ sens_param = st.selectbox(
 # 参数映射
 sens_map = {
     "制冷剂流量": ("mass_flow", np.linspace(72, 1800, 25), "kg/h"),
-    "蒸发温度": ("T_evap", np.linspace(-10, 12, 23), "°C"),
+    "蒸发温度": ("T_evap", np.linspace(-40, 12, 53), "°C"),
     "迎面风速": ("face_velocity", np.linspace(0.5, 4.0, 15), "m/s"),
-    "进风温度": ("T_air_in", np.linspace(20, 40, 21), "°C"),
+    "进风温度": ("T_air_in", np.linspace(-40, 40, 41), "°C"),
     "进风相对湿度": ("RH_air_in", np.linspace(0.2, 0.9, 15), ""),
     "翅片节距": ("fin_pitch", np.linspace(1.3, 12.0, 12), "mm"),
     "排数": ("num_rows", np.arange(1, 13), "排"),

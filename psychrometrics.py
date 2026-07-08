@@ -19,7 +19,7 @@ def saturation_pressure_water(T_celsius: float) -> float:
     """
     计算水面饱和水蒸气压 (Pa)
     ASHRAE Fundamentals 2013 Ch.1, Eq.5 (Hyland-Wexler)
-    适用温度范围: 0 ~ 200 °C
+    适用温度范围: -100 ~ 200 °C (低于0°C使用冰面Hyland-Wexler方程)
 
     Parameters
     ----------
@@ -190,7 +190,7 @@ def wet_bulb_temperature(T_db: float, W: float, p: float = 101325.0) -> float:
         return W_calc - W
 
     try:
-        T_wb = brentq(_func, -20, min(T_db, 50))
+        T_wb = brentq(_func, -60, min(T_db, 50))
     except Exception:
         T_wb = T_db - 2.0
     return T_wb
